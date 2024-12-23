@@ -1,8 +1,52 @@
-
 <!DOCTYPE html>
-<html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gerador de Jogos Mega Sena</title>
+</head>
 <body>
-<h1>Hello World</h1>
-<p>I'm hosted with GitHub Pages.</p>
+    <h1>Gerador de Jogos Mega Sena</h1>
+
+    <form id="form-gerar-jogos" method="POST" action="/gerar_jogos">
+        <label for="numeros_por_jogo">Quantos números por jogo?</label>
+        <input type="number" id="numeros_por_jogo" name="numeros_por_jogo" value="6" required>
+
+        <label for="n_jogos">Quantos jogos você quer gerar?</label>
+        <input type="number" id="n_jogos" name="n_jogos" value="3" required>
+
+        <button type="submit">Gerar Jogos</button>
+    </form>
+
+    <div id="resultados">
+        <h2>Jogos Gerados</h2>
+        <ul id="lista-jogos"></ul>
+    </div>
+
+    <script>
+        document.getElementById("form-gerar-jogos").addEventListener("submit", function(event) {
+            event.preventDefault();
+            
+            const formData = new FormData(event.target);
+            
+            fetch("/gerar_jogos", {
+                method: "POST",
+                body: formData
+            })
+            .then(response => response.json())
+            .then(jogos => {
+                const listaJogos = document.getElementById("lista-jogos");
+                listaJogos.innerHTML = "";
+                jogos.forEach(jogo => {
+                    const li = document.createElement("li");
+                    li.textContent = `Jogo: ${jogo.join(', ')}`;
+                    listaJogos.appendChild(li);
+                });
+            })
+            .catch(error => {
+                console.error("Erro:", error);
+            });
+        });
+    </script>
 </body>
 </html>
