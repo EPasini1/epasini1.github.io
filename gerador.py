@@ -70,17 +70,21 @@ def index():
 
 @app.route('/gerar_jogos', methods=['POST'])
 def gerar_jogos_api():
-    arquivo = 'mega_sena.csv'
-    df = ler_csv(arquivo)
-    
-    # Receber parâmetros via formulário
-    numeros_por_jogo = int(request.form.get('numeros_por_jogo', 6))
-    n_jogos = int(request.form.get('n_jogos', 3))
-    
-    # Gerar jogos
-    jogos = gerar_jogos(df, numeros_por_jogo, n_jogos)
-    
-    return jsonify(jogos)
+    try:
+        arquivo = 'mega_sena.csv'
+        df = ler_csv(arquivo)
+
+        # Receber parâmetros via formulário
+        numeros_por_jogo = int(request.form.get('numeros_por_jogo', 6))
+        n_jogos = int(request.form.get('n_jogos', 3))
+
+        # Gerar jogos
+        jogos = gerar_jogos(df, numeros_por_jogo, n_jogos)
+
+        return jsonify(jogos)  # Retorna os jogos gerados em JSON
+    except Exception as e:
+        return jsonify({'erro': str(e)}), 500  # Retorna um erro em JSON caso algo dê errado
+
 
 if __name__ == "__main__":
     app.run(debug=True)

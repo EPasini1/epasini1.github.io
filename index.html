@@ -8,6 +8,7 @@
 <body>
     <h1>Gerador de Jogos Mega Sena</h1>
 
+    <!-- Formulário para geração dos jogos -->
     <form id="form-gerar-jogos" method="POST" action="/gerar_jogos">
         <label for="numeros_por_jogo">Quantos números por jogo?</label>
         <input type="number" id="numeros_por_jogo" name="numeros_por_jogo" value="6" required>
@@ -18,6 +19,7 @@
         <button type="submit">Gerar Jogos</button>
     </form>
 
+    <!-- Seção para exibir os resultados -->
     <div id="resultados">
         <h2>Jogos Gerados</h2>
         <ul id="lista-jogos"></ul>
@@ -25,24 +27,30 @@
 
     <script>
         document.getElementById("form-gerar-jogos").addEventListener("submit", function(event) {
-            event.preventDefault();
-            
-            const formData = new FormData(event.target);
-            
+            event.preventDefault();  // Impede o comportamento padrão do envio do formulário
+
+            const formData = new FormData(event.target);  // Captura os dados do formulário
+
             fetch("/gerar_jogos", {
                 method: "POST",
                 body: formData
             })
-            .then(response => response.json())
+            .then(response => {
+                // Verifica se a resposta foi bem-sucedida (status 200)
+                if (!response.ok) {
+                    throw new Error('Erro ao gerar os jogos');
+                }
+                return response.json();  // Converte a resposta em JSON
+            })
             .then(jogos => {
                 const listaJogos = document.getElementById("lista-jogos");
-                listaJogos.innerHTML = ""; // Limpar a lista antes de adicionar os novos jogos
+                listaJogos.innerHTML = "";  // Limpar a lista antes de adicionar os novos jogos
                 
                 // Verificar se os dados recebidos estão no formato esperado
                 if (Array.isArray(jogos)) {
                     jogos.forEach(jogo => {
                         const li = document.createElement("li");
-                        li.textContent = `Jogo: ${jogo.join(', ')}`;
+                        li.textContent = `Jogo: ${jogo.join(', ')}`;  // Exibe os números do jogo
                         listaJogos.appendChild(li);
                     });
                 } else {
