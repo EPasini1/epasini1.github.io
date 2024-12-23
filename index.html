@@ -36,15 +36,22 @@
             .then(response => response.json())
             .then(jogos => {
                 const listaJogos = document.getElementById("lista-jogos");
-                listaJogos.innerHTML = "";
-                jogos.forEach(jogo => {
-                    const li = document.createElement("li");
-                    li.textContent = `Jogo: ${jogo.join(', ')}`;
-                    listaJogos.appendChild(li);
-                });
+                listaJogos.innerHTML = ""; // Limpar a lista antes de adicionar os novos jogos
+                
+                // Verificar se os dados recebidos estão no formato esperado
+                if (Array.isArray(jogos)) {
+                    jogos.forEach(jogo => {
+                        const li = document.createElement("li");
+                        li.textContent = `Jogo: ${jogo.join(', ')}`;
+                        listaJogos.appendChild(li);
+                    });
+                } else {
+                    console.error("A resposta não está no formato esperado:", jogos);
+                }
             })
             .catch(error => {
-                console.error("Erro:", error);
+                console.error("Erro na requisição:", error);
+                alert("Ocorreu um erro ao gerar os jogos. Tente novamente.");
             });
         });
     </script>
