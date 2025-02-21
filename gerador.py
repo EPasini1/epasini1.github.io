@@ -31,16 +31,22 @@ def gerar_fibonacci():
     return fib
 
 # Função para gerar um jogo equilibrado
-def gerar_jogo_equilibrado(quentes, frios, fibonacci, numeros_por_jogo):
+def gerar_jogo_equilibrado(quentes, frios, fibonacci, numeros_por_jogo=6):
     jogo = set()
-    jogo.update(random.sample(quentes, min(3, len(quentes))))
-    jogo.update(random.sample(frios, min(3, len(frios))))
+    # Adiciona 2 números "quentes"
+    jogo.update(random.sample(quentes, min(2, len(quentes))))
+    # Adiciona 2 números "frios"
+    jogo.update(random.sample(frios, min(2, len(frios))))
+    # Adiciona 1 número da sequência de Fibonacci
     fibonacci_disponiveis = [num for num in fibonacci if num not in jogo]
-    jogo.update(random.sample(fibonacci_disponiveis, min(1, len(fibonacci_disponiveis))))
+    if fibonacci_disponiveis:
+        jogo.add(random.choice(fibonacci_disponiveis))
+    # Completa o jogo com números aleatórios até atingir o total desejado
     restante = [x for x in range(1, 61) if x not in jogo]
     while len(jogo) < numeros_por_jogo:
         jogo.add(random.choice(restante))
     return sorted(jogo)
+
 
 def simulacao_monte_carlo(frequencias, quentes, frios, fibonacci, numeros_por_jogo, n_simulacoes=1000, n_jogos=6):
     melhores_jogos = []
